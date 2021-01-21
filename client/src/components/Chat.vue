@@ -2,7 +2,7 @@
   <div id="container">
     <div id="output">
       <h1>STRUCT</h1>
-      <p v-for="(text, index) in textOutput" :key="index">{{text}}</p>
+      <p v-for="(text, index) in textOutput" :key="index">{{ text }}</p>
     </div>
     <div id="input">
       <form>
@@ -14,33 +14,42 @@
 </template>
 
 <script>
-import io from 'socket.io-client';
-let socket = io('http://localhost:3000');
+// import io from 'socket.io-client';
+// let socket = io('http://localhost:3000');
 
 export default {
-    name: 'Chat',
-    data: function () {
-      return {
-        textInput: null,
-        textOutput: []
-      }
+  name: "Chat",
+  data: function() {
+    return {
+      textInput: null,
+      textOutput: [],
+    };
+  },
+  methods: {
+    submitText: function(event) {
+      event.preventDefault();
+      this.socket.emit('send', this.textInput, this.lobbyId, this.userName);
     },
-    methods: {
-      submitText: function (event) {
-        event.preventDefault();
-        socket.emit('send', this.textInput);
-      }
-    },
-    created: function () {
-      socket.on('connect', () => {
-        console.log('Connected!');
-      });
-      socket.on('receive', (text) => {
-        this.textOutput.push(text);
-        this.textInput = null;
-      })
-    }
-}
+  },
+  props: {
+    socket: Object,
+    lobbyId: String,
+    userName: String
+  },
+  created: function() {
+    // socket.on('connect', () => {
+    //   console.log('Connected!');
+    // });
+    this.socket.on('receive', (text) => {
+      this.textOutput.push(text);
+      this.textInput = null;
+    })
+
+    this.socket.on("userJoined", (userName) => {
+      this.textOutput.push(userName + " has joined the room");
+    })
+  },
+};
 </script>
 
 <style scoped>
@@ -62,15 +71,12 @@ input[type="text"] {
   height: 20px;
   width: 40vw;
   border: 2px solid cyan;
-  background-color: black;
-  color: hotpink;
+  background-color: white;
   padding-left: 1em;
 }
 input[type="submit"] {
   height: 25px;
   width: 5vw;
-  background-color: black;
-  color: cyan;
   border: 2px solid cyan;
   margin-right: 2vw;
 }

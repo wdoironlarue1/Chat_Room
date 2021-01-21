@@ -1,24 +1,29 @@
 <template>
   <div id="app">
-    <div id="game">
+    <!-- <div id="game">
       <Game />
-    </div>
+    </div> -->
     <div id="border" />
     <div id="input">
-      <Chat />
+      <Chat :socket="socket" :lobbyId="lobbyId" :userName="userName"/>
     </div>
   </div>
 </template>
 
 <script>
 import Chat from "./Chat.vue";
-import Game from "./Game.vue";
+// import Game from "./Game.vue";
 
 export default {
   name: "Lobby",
   components: {
     Chat,
-    Game,
+    // Game,
+  },
+  props: {
+    socket: Object,
+    lobbyId: String,
+    userName: String
   },
 };
 </script>
