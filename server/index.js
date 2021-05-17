@@ -5,8 +5,6 @@ const io = require("socket.io")(http, {
 });
 const {lobby} = require("./lobby");
 
-global.gameStates = {};
-
 io.on("connection", function (socket) {
   console.log("A user connected: " + socket.id);
 
